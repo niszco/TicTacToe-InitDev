@@ -7,7 +7,6 @@ function main(): void { //Fonction Principale
 function questionTailleGrille(): void { //Exercice 2, Permet de choisir la taille de la grille
     let tailleQuestion = Number(readlineSync.question("Veuillez choisir la taille de votre grille: "));
     créeGrille(tailleQuestion);
-    console.log("debug", tailleQuestion);
 }
 
 function créeGrille(taille: number): void { //Exercice 1, Permet d'afficher la grille
