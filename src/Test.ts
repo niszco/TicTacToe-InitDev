@@ -56,3 +56,38 @@ let grille = [
 ];
 
 process.stdout.write(grille[0][1]/*donne 2*/+ " "+ grille[2][1]/*donne7*/); // Il est possible de specifier un indice dans un array qui est dans un array
+
+
+//Je met de coté au cas ou
+/*function créeGrille(taille: number): void { //Exercice 1, Permet d'afficher la grille
+    let grilleMatrice = []; //La variable qui stocke la grille pour le Tic Tac Toe
+    let recupérateurString = []; //cette variable sert à recuper les strings et à les mettres dans des tableaux séparé pour une ligne
+    //le premier for est pour généré le nombre d'élément dans les lignes
+    for (let colonne = 0, compteurColonne = 0; compteurColonne < taille+(taille-1); colonne++) { //taille+(taille-1) permet d'avoir la longueur exact du tableau pour une taille de grille spécifique. Par exemple, si on veut une grille de 10, il y aura 9 séparateur "|" donc 10 grille + (10 - 1)séparateur = 19
+        if (compteurColonne % 2 != 0) {
+            recupérateurString.push("-");
+        }
+        else {
+            if (colonne % 2 === 0) { //
+                recupérateurString.push("#"); // le # représente un espace vide
+            }
+            else {
+                recupérateurString.push("|");
+            }
+        }
+        if (colonne === taille+(taille-1)) {
+            grilleMatrice.push(recupérateurString);
+            compteurColonne ++;
+            colonne = -1;
+            recupérateurString =[];
+        }
+    }
+    tailleCôté(grilleMatrice);
+    //TODO c'est l'exo 7 en fait
+    for (let colonne = 0; colonne < grilleMatrice.length; colonne++) { //Le deuxième for est pour afficher la grille
+        for (let ligne = 0; ligne < grilleMatrice.length; ligne++) {
+            process.stdout.write(grilleMatrice[colonne][ligne] + " ");
+        }
+        console.log();
+    }
+}/*
