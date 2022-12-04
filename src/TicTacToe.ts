@@ -18,7 +18,7 @@ function questionTailleGrille(): void { //Permet de choisir la taille de la gril
 function créeGrille(taille: number): void { //Exercice 1, Permet d'afficher la grille
     let grilleMatrice = []; //La variable qui stocke la grille pour le Tic Tac Toe
     let recupérateurString = []; //cette variable sert à recuper les strings et à les mettres dans des tableaux séparé pour une ligne
-    //le premier for est pour généré le nombre d'élément dans les lignes
+    //le premier for est pour généré le nombre d'élément dans les lignes et les colonnes
     for (let colonne = 0, compteurColonne = 0; compteurColonne < taille; colonne++) {
         recupérateurString.push("#"); // le # représente un espace vide
         if (colonne === taille) {
@@ -48,13 +48,13 @@ function tailleCôté(grille: Array<Array<string>>): void { //Exercice 2
 }
 
 function estVide(grille: Array<Array<string>>, colonneTaille: number, ligneTaille: number ): boolean { //Exercice 3
-    for (let colonne = 0, ligne = 0; colonne < colonneTaille; ligne++) {
-        if (grille[colonne][ligne] != "#" || grille.length != colonneTaille || grille.length != ligneTaille) { //Si la grille n'est pas vide ou si la grille n'est pas un carré, cela retourne faux
+    for (let ligne = 0, colonne = 0; ligne < ligneTaille; colonne++) {
+        if (grille[ligne][colonne] != "#" || grille.length != colonneTaille || grille.length != ligneTaille) { //Si la grille n'est pas vide ou si la grille n'est pas un carré, cela retourne faux
             return false;
         }
-        if (ligne === grille.length-1) { //ça vérifie la ligne d'une colonne un par un
-            ligne = -1;
-            colonne ++;
+        if (colonne === grille.length-1) { //ça vérifie la colonne d'une ligne un par un
+            colonne = -1;
+            ligne ++;
         }
         else {
 
