@@ -33,6 +33,9 @@ function créeGrille(taille: number): void { //Exercice 1, Permet d'afficher la 
     for (let colonne = 0; colonne < grilleMatrice.length; colonne++) { //Le deuxième for est pour afficher la grille
         for (let ligne = 0; ligne < grilleMatrice.length; ligne++) {
             process.stdout.write(grilleMatrice[colonne][ligne] + " ");
+            if (ligne != grilleMatrice.length-1) {
+                process.stdout.write("|" + " ");
+            }
         }
         console.log();
     }

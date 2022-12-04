@@ -90,4 +90,7 @@ process.stdout.write(grille[0][1]/*donne 2*/+ " "+ grille[2][1]/*donne7*/); // I
         }
         console.log();
     }
-}/*
+}*/
+
+let tab = [0, 2, 4, 8];
+for (let i in tab) console.log(i, "a");
