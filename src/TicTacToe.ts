@@ -38,14 +38,13 @@ function créeGrille(taille: number): void { //Exercice 1, Permet d'afficher la 
     }
 }
 
-function tailleCôté(grille: Array<Array<string>>): number { //Exercice 2 
+function tailleCôté(grille: Array<Array<string>>): void { //Exercice 2 
     let tailleGrille = 0;// Une grille de Tic Tac Toe est forcément un carré
     for (let ligne = 0; ligne < grille.length; ligne ++, tailleGrille ++ ){
 
     }
     console.log("voici la taille :", tailleGrille);
     console.log(estVide(grille, tailleGrille, tailleGrille));
-    return tailleGrille;
 }
 
 function estVide(grille: Array<Array<string>>, colonneTaille: number, ligneTaille: number ): boolean { //Exercice 3
