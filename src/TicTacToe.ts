@@ -38,26 +38,24 @@ function créeGrille(taille: number): void { //Exercice 1, Permet d'afficher la 
     }
 }
 
-function tailleCôté(grille: Array<Array<string>>): void { //Exercice 2 
+function tailleCôté(grille: Array<Array<string>>): number { //Exercice 2 
     let tailleGrille = 0;// Une grille de Tic Tac Toe est forcément un carré
     for (let ligne = 0; ligne < grille.length; ligne ++, tailleGrille ++ ){
 
     }
     console.log("voici la taille :", tailleGrille);
     console.log(estVide(grille, tailleGrille, tailleGrille));
+    return tailleGrille;
 }
 
 function estVide(grille: Array<Array<string>>, colonneTaille: number, ligneTaille: number ): boolean { //Exercice 3
     for (let colonne = 0, ligne = 0; colonne < colonneTaille; ligne++) {
-        //console.log("cologne =",colonne) //TODO à enlever
-        //console.log("ligne = ",ligne) //TODO à enlever
-        if (grille[colonne][ligne] != "#" || grille.length != colonneTaille || grille.length != ligneTaille) {
+        if (grille[colonne][ligne] != "#" || grille.length != colonneTaille || grille.length != ligneTaille) { //Si la grille n'est pas vide ou si la grille n'est pas un carré, cela retourne faux
             return false;
         }
-        if (ligne === grille.length-1) {
+        if (ligne === grille.length-1) { //ça vérifie la ligne d'une colonne un par un
             ligne = -1;
             colonne ++;
-            //console.log("debug jaaj") //TODO à enlever
         }
         else {
 
