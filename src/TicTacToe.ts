@@ -28,8 +28,10 @@ function créeGrille(taille: number): void { //Exercice 1, Permet d'afficher la 
             recupérateurString =[];
         }
     }
+    grilleMatrice[0][2] = "X"
     tailleCôté(grilleMatrice);
     écrire(grilleMatrice, 2, 1, "O");
+    effacer(grilleMatrice, 0, 2)
     //TODO c'est l'exo 7 en fait
     for (let colonne = 0; colonne < grilleMatrice.length; colonne++) { //Le deuxième for est pour afficher la grille
         for (let ligne = 0; ligne < grilleMatrice.length; ligne++) {
@@ -76,6 +78,15 @@ function écrire(grille: Array<Array<string>>, ligne: number, colonne: number, s
     }
     else {
         grille[ligne][colonne] = symbole;
+    }
+}
+
+function effacer(grille: Array<Array<string>>, ligne: number, colonne: number): void { //Exercice 5
+    if ((ligne < 0 || ligne > grille.length-1) || (colonne < 0 || colonne > grille.length-1) || grille[ligne][colonne] === "#") { //Si les valeurs de la colonne ou de la ligne sont au dela du tableau ou si elle a deja un symbole, cela retourne une erreur
+        console.log("erreur, les paramétres pour la position sont fausse ou elle contient deja une valeur"); //TODO peut-être changer le com car c'est le même que celui du 4
+    }
+    else {
+        grille[ligne][colonne] = "#";
     }
 }
 
