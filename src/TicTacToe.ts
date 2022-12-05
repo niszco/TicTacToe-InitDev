@@ -7,7 +7,7 @@ function main(): void { //Fonction Principale
 function questionTailleGrille(): void { //Permet de choisir la taille de la grille
     let tailleQuestion = Number(readlineSync.question("Veuillez choisir la taille de votre grille: "));
     if (tailleQuestion < 3) { // Si l'utilisateur demande un nombre inférieur à 3, ça lui repose la question
-        console.log("Erreur. Veuillez choisir 3 au minimum")
+        console.log("Erreur. Veuillez choisir 3 au minimum");
         questionTailleGrille();
     }
     else {
@@ -29,6 +29,7 @@ function créeGrille(taille: number): void { //Exercice 1, Permet d'afficher la 
         }
     }
     tailleCôté(grilleMatrice);
+    écrire(grilleMatrice, 2, 1, "O");
     //TODO c'est l'exo 7 en fait
     for (let colonne = 0; colonne < grilleMatrice.length; colonne++) { //Le deuxième for est pour afficher la grille
         for (let ligne = 0; ligne < grilleMatrice.length; ligne++) {
@@ -66,4 +67,16 @@ function estVide(grille: Array<Array<string>>, colonneTaille: number, ligneTaill
     return true;
 }
 
-main()
+function écrire(grille: Array<Array<string>>, ligne: number, colonne: number, symbole: string): void { //Exercice 4
+    if ((ligne < 0 || ligne > grille.length-1) || (colonne < 0 || colonne > grille.length-1) || grille[ligne][colonne] != "#") { //Si les valeurs de la colonne ou de la ligne sont au dela du tableau ou si elle a deja un symbole, cela retourne une erreur
+        console.log("erreur, les paramétres pour la position sont fausse ou elle contient deja une valeur");
+    }
+    else if (symbole != "X" && symbole != "O" && symbole != "x" && symbole != "o") { //Si le symbole n'est pas conforme, cela retourne une erreur, x et X sont différent ainsi que pour o et O
+        console.log("erreur, le paramétre pour le symbole est non conforme");
+    }
+    else {
+        grille[ligne][colonne] = symbole;
+    }
+}
+
+main();
