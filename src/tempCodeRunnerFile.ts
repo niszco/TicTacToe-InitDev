@@ -1,1 +1,1 @@
-"tab[" + i + "] = " + tab[i]
+            console.log();

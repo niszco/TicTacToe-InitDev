@@ -29,28 +29,20 @@ function créeGrille(taille: number): void { //Exercice 1, Permet d'afficher la 
         }
     }
     grilleMatrice[0][2] = "X"
-    tailleCôté(grilleMatrice);
+    console.log(tailleCôté(grilleMatrice));
+    console.log(estVide(grilleMatrice, tailleCôté(grilleMatrice), tailleCôté(grilleMatrice)));// TODO si tu oublie comment faire des appels de fonction, check ça
     écrire(grilleMatrice, 2, 1, "O");
     effacer(grilleMatrice, 0, 2)
-    //TODO c'est l'exo 7 en fait
-    for (let colonne = 0; colonne < grilleMatrice.length; colonne++) { //Le deuxième for est pour afficher la grille
-        for (let ligne = 0; ligne < grilleMatrice.length; ligne++) {
-            process.stdout.write(grilleMatrice[colonne][ligne] + " ");
-            if (ligne != grilleMatrice.length-1) {
-                process.stdout.write("|" + " ");
-            }
-        }
-        console.log();
-    }
+    console.log(est(grilleMatrice, 2, 1, "O"))
+    affiche(grilleMatrice)
 }
 
-function tailleCôté(grille: Array<Array<string>>): void { //Exercice 2 
+function tailleCôté(grille: Array<Array<string>>): number { //Exercice 2 
     let tailleGrille = 0;// Une grille de Tic Tac Toe est forcément un carré
     for (let ligne = 0; ligne < grille.length; ligne ++, tailleGrille ++ ){
 
     }
-    console.log("voici la taille :", tailleGrille);
-    console.log(estVide(grille, tailleGrille, tailleGrille));
+    return tailleGrille
 }
 
 function estVide(grille: Array<Array<string>>, colonneTaille: number, ligneTaille: number ): boolean { //Exercice 3
@@ -74,7 +66,7 @@ function écrire(grille: Array<Array<string>>, ligne: number, colonne: number, s
         console.log("erreur, les paramétres pour la position sont fausse ou elle contient deja une valeur");
     }
     else if (symbole != "X" && symbole != "O" && symbole != "x" && symbole != "o") { //Si le symbole n'est pas conforme, cela retourne une erreur, x et X sont différent ainsi que pour o et O
-        console.log("erreur, le paramétre pour le symbole est non conforme");
+        console.log("erreur, le paramétre pour le symbole est non conforme"); //TODO Remplacer par des lowercase machin
     }
     else {
         grille[ligne][colonne] = symbole;
@@ -83,10 +75,36 @@ function écrire(grille: Array<Array<string>>, ligne: number, colonne: number, s
 
 function effacer(grille: Array<Array<string>>, ligne: number, colonne: number): void { //Exercice 5
     if ((ligne < 0 || ligne > grille.length-1) || (colonne < 0 || colonne > grille.length-1) || grille[ligne][colonne] === "#") { //Si les valeurs de la colonne ou de la ligne sont au dela du tableau ou si elle a deja un symbole, cela retourne une erreur
-        console.log("erreur, les paramétres pour la position sont fausse ou elle contient deja une valeur"); //TODO peut-être changer le com car c'est le même que celui du 4
+        console.log("erreur, les paramétres pour la position sont fausse ou elle est deja vide"); //TODO peut-être changer le com car c'est le même que celui du 4
     }
     else {
         grille[ligne][colonne] = "#";
+    }
+}
+
+function est(grille: Array<Array<string>>, ligne: number, colonne: number, symbole: string): boolean { //Exercice 6
+    if ((ligne < 0 || ligne > grille.length-1) || (colonne < 0 || colonne > grille.length-1) || grille[ligne][colonne] != symbole || (symbole != "X" && symbole != "O" && symbole != "x" && symbole != "o")) {
+        console.log("debug test est")
+        return false
+    }
+    return true;
+}
+
+function affiche(grille: Array<Array<string>>): void { //Exercice 7
+    for (let ligne = 0; ligne < grille.length; ligne++) { //Le deuxième for est pour afficher la grille
+        for (let colonne = 0; colonne < grille.length; colonne++) {
+            process.stdout.write(grille[ligne][colonne] + " ");
+            if (colonne != grille.length-1) { //Pour éviter qu'un "|"" soit mis à la fin
+                process.stdout.write("|" + " ");
+            }
+        }
+        console.log();
+        for (let jaaj1 = 0; jaaj1 < 1; jaaj1++) { //TODO créer une explication pourquoi ça marche, car je n'en sais rien lol
+            for (let jaaj2 = 0; jaaj2 < grille.length; jaaj2++) { //TODO changer noms de variable
+                process.stdout.write("-" + "-" + "-");
+            }
+            console.log();
+        }
     }
 }
 
