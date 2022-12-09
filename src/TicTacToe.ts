@@ -39,9 +39,7 @@ function créeGrille(taille: number): void { //Exercice 1, Permet d'afficher la 
 
 function tailleCôté(grille: Array<Array<string>>): number { //Exercice 2 
     let tailleGrille = 0;// Une grille de Tic Tac Toe est forcément un carré
-    for (let ligne = 0; ligne < grille.length; ligne ++, tailleGrille ++ ){
-
-    }
+    for (let ligne = 0; ligne < grille.length; ligne ++, tailleGrille ++ );
     return tailleGrille
 }
 
@@ -53,9 +51,6 @@ function estVide(grille: Array<Array<string>>, colonneTaille: number, ligneTaill
         if (colonne === grille.length-1) { //ça vérifie la colonne d'une ligne un par un
             colonne = -1;
             ligne ++;
-        }
-        else {
-
         }
     }
     return true;
@@ -91,16 +86,16 @@ function est(grille: Array<Array<string>>, ligne: number, colonne: number, symbo
 }
 
 function affiche(grille: Array<Array<string>>): void { //Exercice 7
-    for (let ligne = 0; ligne < grille.length; ligne++) { //Le deuxième for est pour afficher la grille
-        for (let colonne = 0; colonne < grille.length; colonne++) {
-            process.stdout.write(grille[ligne][colonne] + " ");
-            if (colonne != grille.length-1) { //Pour éviter qu'un "|"" soit mis à la fin
+    for (let ligne_pipe = 0; ligne_pipe < grille.length; ligne_pipe++) { //Le deuxième for est pour afficher la grille
+        for (let colonne_pipe = 0; colonne_pipe < grille.length; colonne_pipe++) {
+            process.stdout.write(grille[ligne_pipe][colonne_pipe] + " ");
+            if (colonne_pipe != grille.length-1) { //Pour éviter qu'un "|"" soit mis à la fin
                 process.stdout.write("|" + " ");
             }
         }
         console.log();
-        for (let jaaj1 = 0; jaaj1 < 1; jaaj1++) { //TODO créer une explication pourquoi ça marche, car je n'en sais rien lol
-            for (let jaaj2 = 0; jaaj2 < grille.length; jaaj2++) { //TODO changer noms de variable
+        for (let ligne_dash = 0; ligne_dash < 1; ligne_dash++) { //TODO créer une explication pourquoi ça marche, car je n'en sais rien lol
+            for (let colonne_dash = 0; colonne_dash < grille.length; colonne_dash++) { //TODO changer noms de variable
                 process.stdout.write("-" + "-" + "-");
             }
             console.log();
