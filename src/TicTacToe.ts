@@ -1,21 +1,6 @@
 import * as readlineSync from "readline-sync";
 
-function main(): void { //Fonction Principale
-    let newTableau = créeGrille(questionTailleGrille());
-    console.log(newTableau);
-    affiche(newTableau);
-}
-
-function questionTailleGrille(): number { //Permet de choisir la taille de la grille
-    let tailleQuestion = Number(readlineSync.question("Veuillez choisir la taille de votre grille: "));
-    if (tailleQuestion < 3) { // Si l'utilisateur demande un nombre inférieur à 3, ça lui repose la question, sinon ça crée le tableau
-        console.log("Erreur. Veuillez choisir 3 au minimum");
-        return questionTailleGrille();
-    }
-    else {
-        return tailleQuestion;
-    }
-}
+//1er partie
 
 function créeGrille(taille: number): Array<Array<string>> { //Exercice 1, Permet d'afficher la grille
     let grilleMatrice = []; //La variable qui stocke la grille pour le Tic Tac Toe
@@ -40,14 +25,8 @@ function tailleCôté(grille: Array<Array<string>>): number { //Exercice 2
 }
 
 function estVide(grille: Array<Array<string>>, ligneTaille: number, colonneTaille: number ): boolean { //Exercice 3
-    for (let ligne = 0, colonne = 0; ligne < ligneTaille; colonne++) {
-        if (grille[ligne][colonne] != " " || grille.length != colonneTaille || grille.length != ligneTaille) { //Si la grille n'est pas vide ou si la grille n'est pas un carré, cela retourne faux
-            return false;//TODO Check la condition de la taille de la grille
-        }
-        if (colonne === grille.length-1) { //ça vérifie la colonne d'une ligne un par un
-            colonne = -1;
-            ligne ++;
-        }
+    if ((ligneTaille < 0 || ligneTaille > grille.length-1) || (colonneTaille < 0 || colonneTaille > grille.length-1) || grille[ligneTaille][colonneTaille] != " ") {
+        return false;
     }
     return true;
 }
@@ -75,7 +54,7 @@ function effacer(grille: Array<Array<string>>, ligne: number, colonne: number): 
 
 function est(grille: Array<Array<string>>, ligne: number, colonne: number, symbole: string): boolean { //Exercice 6
     if ((ligne < 0 || ligne > grille.length-1) || (colonne < 0 || colonne > grille.length-1) || grille[ligne][colonne] != symbole || (symbole != "X" && symbole != "O" && symbole != "x" && symbole != "o")) {
-        return false; //TODO check condtion de l'énoncer
+        return false;
     }
     return true;
 }
@@ -105,6 +84,123 @@ function affiche(grille: Array<Array<string>>): void { //Exercice 7
                 console.log();
             }
         }
+    }
+}
+
+//2ème partie
+
+function main(): void { //Fonction Principale
+    let newTableau = créeGrille(questionTailleGrille());
+    tourParTour(newTableau, 0);
+}
+
+function questionTailleGrille(): number { //Permet de choisir la taille de la grille
+    let tailleQuestion = Number(readlineSync.question("Veuillez choisir la taille de votre grille: "));
+    if (tailleQuestion < 3) { // Si l'utilisateur demande un nombre inférieur à 3, ça lui repose la question, sinon ça crée le tableau
+        console.log("Erreur. Veuillez choisir 3 au minimum");
+        return questionTailleGrille();
+    }
+    else {
+        return tailleQuestion;
+    }
+}
+
+function continuerPartie(tour: number, maximumDeTour: number): number {
+    let reponseQuestion = String(readlineSync.question("On continue ? [O]ui ou [N]on: "));
+    if (reponseQuestion === "N") { //Si l'utilisateur réponds Non, la fonction modifie la variable tour pour qu'elle soit identique à la valeur maximale de tours, cela permet d'arreter la boucle
+       return tour = maximumDeTour;
+    }
+    else if (reponseQuestion != "N" && reponseQuestion != "O") { //Si l'utilisateur saisie une valeur qui n'est ni N ou O, on lui redemande de saisir
+        console.log("Erreur. Veuillez saisir un caractère valide [O] ou [N]");
+        return continuerPartie(tour, maximumDeTour);
+    }
+    else { //Sinon la variable tour ne change pas
+        return tour;
+    }
+}
+
+function tourParTour(grille: Array<Array<string>>, tour: number): void { //Fonction pour faire les tours, en gros sous fonction principale
+    for (let tourBoucle = tour, maximumTour = tailleCôté(grille) * tailleCôté(grille); tourBoucle < maximumTour; tourBoucle ++) { // Une grille de Tic Tac Toe est un carré, donc pour calculer le maximum d'élement on faits taille coté X taille coté
+        tourBoucle = continuerPartie(tourBoucle, maximumTour);
+        if (tourBoucle % 2 === 0) { //Le jeu commencera toujours par le joueur O
+            console.log("C'est au tour du joueur O")
+            dansLaBoucle(grille, tourBoucle)
+        }
+        else if (tourBoucle % 2 != 0) {
+            console.log("C'est au tour du joueur X")
+            dansLaBoucle(grille, tourBoucle)
+        }
+        affiche(grille);
+    }
+}
+
+function dansLaBoucle(grille: Array<Array<string>>, tour: number): void {
+    if (tour === tailleCôté(grille) * tailleCôté(grille)) {
+        console.log("la partie à été intérompue")
+    }
+    else {
+        let ligne = saisieUtilisateurLigne(grille, tour)
+        let colonne = saisieUtilisateurColonne(grille, tour)
+        vérification(ligne,colonne ,grille, tour)
+        if (tour % 2 === 0) {
+            écrire(grille, ligne, colonne, "O")
+        }
+        else {
+            écrire(grille, ligne, colonne, "X")
+        }
+    }
+}
+
+function vérification(ligneFonction: number, colonneFonction: number, grilleReférence: Array<Array<string>>, numéroTour: number): void {
+    if (estVide(grilleReférence, ligneFonction, colonneFonction) === false) {
+        console.log("erreur la case n'est pas vide")
+        dansLaBoucle(grilleReférence, numéroTour)
+    }
+}
+
+function saisieUtilisateurLigne(grille: Array<Array<string>>, numéroTour: number): number { //Cette fonction permet à l'utilisateur de rentrer une saisie et elle vérifie si elle est valide
+    let nombreSaisieLigne = Number(readlineSync.question("Entrez le numéro de la ligne (appuyez sur entrée pour annuler la saisie): "));
+    if (nombreSaisieLigne <= tailleCôté(grille)-1 && nombreSaisieLigne >= 0) {
+        return nombreSaisieLigne
+    }
+    else if (nombreSaisieLigne > tailleCôté(grille)-1 ) {
+        console.log("Erreur, le nombre inserer est plus grand que la longueur maximale de la grille");
+        return saisieUtilisateurLigne(grille, numéroTour);
+    }
+    else if (nombreSaisieLigne < 0) {
+        console.log("Erreur, le nombre inserer ne peut pas être inférieur à 0");
+        return saisieUtilisateurLigne(grille, numéroTour);
+    }
+    else if (nombreSaisieLigne == null) {
+        tourParTour(grille, numéroTour)
+        return 0
+    }
+    else {
+        console.log("Erreur, caractère non valide");
+        return saisieUtilisateurLigne(grille, numéroTour);
+    }
+}
+
+function saisieUtilisateurColonne(grille: Array<Array<string>>, numéroTour: number): number { //Cette fonction est la même que celle au dessus, sauf avec des messages différentes
+    let nombreSaisieColonne = Number(readlineSync.question("Entrez le numéro de la colonne (appuyez sur entrée pour annuler la saisie): "));
+    if (nombreSaisieColonne <= tailleCôté(grille)-1 && nombreSaisieColonne >= 0) {
+        return nombreSaisieColonne
+    }
+    else if (nombreSaisieColonne > tailleCôté(grille)-1 ) {
+        console.log("Erreur, le nombre inserer est plus grand que la hauteur maximale de la grille");
+        return saisieUtilisateurColonne(grille, numéroTour);
+    }
+    else if (nombreSaisieColonne < 0) {
+        console.log("Erreur, le nombre inserer ne peut pas être inférieur à 0");
+        return saisieUtilisateurColonne(grille, numéroTour);
+    }
+    else if (nombreSaisieColonne === undefined) {
+        tourParTour(grille, numéroTour)
+        return 0
+    }
+    else {
+        console.log("Erreur, caractère non valide");
+        return saisieUtilisateurColonne(grille, numéroTour);
     }
 }
 
