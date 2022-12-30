@@ -1,1 +1,1 @@
-écrire
+saisieUtilisateur

@@ -120,48 +120,69 @@ function continuerPartie(tour: number, maximumDeTour: number): number {
 }
 
 function tourParTour(grille: Array<Array<string>>, tour: number): void { //Fonction pour faire les tours, en gros sous fonction principale
-    for (let tourBoucle = tour, maximumTour = tailleCôté(grille) * tailleCôté(grille); tourBoucle < maximumTour; tourBoucle ++) { // Une grille de Tic Tac Toe est un carré, donc pour calculer le maximum d'élement on faits taille coté X taille coté
-        tourBoucle = continuerPartie(tourBoucle, maximumTour);
-        if (tourBoucle % 2 === 0) { //Le jeu commencera toujours par le joueur O
-            console.log("C'est au tour du joueur O")
-            dansLaBoucle(grille, tourBoucle)
+    for (let tourBoucle = tour, maximumTour = tailleCôté(grille) * tailleCôté(grille), ligne = 0, colonne = 0; tourBoucle < maximumTour; tourBoucle ++) { // Une grille de Tic Tac Toe est un carré, donc pour calculer le maximum d'élement on faits taille coté X taille coté
+        tourBoucle = continuerPartie(tourBoucle, maximumTour); //TourBoucle est la variable utilisé pour l'incrémentation et connaitre le nombre de tours
+        if (tourBoucle === tailleCôté(grille) * tailleCôté(grille)) { //lors de la fonction précedente, si le joueur à répondu Non, la variable tourBoucle prend la valeur maximumTour qui est aussi la limite du for
+            return intérompPartie();
         }
-        else if (tourBoucle % 2 != 0) {
-            console.log("C'est au tour du joueur X")
-            dansLaBoucle(grille, tourBoucle)
+        else if (tourBoucle % 2 === 0) { //Le jeu commencera toujours par le joueur O
+            console.log("C'est au tour du joueur O");
+            ligne = saisieUtilisateurLigne(grille, tour);
+            if (ligne === tailleCôté(grille) * tailleCôté(grille)) {
+                return tourParTour(grille, tourBoucle)
+            }
+            colonne = saisieUtilisateurColonne(grille, tour);
+            if (colonne === tailleCôté(grille) * tailleCôté(grille)) {
+                return tourParTour(grille, tourBoucle)
+            }
+            if (estVide(grille, ligne, colonne) === false) {
+                console.log("erreur la case n'est pas vide");
+                return tourParTour(grille, tourBoucle);
+            }
+            écrire(grille, ligne, colonne, "O");
+        }
+        else { // si tourBoucle est impaire, c'est le tour du joueur X
+            console.log("C'est au tour du joueur X");
+            ligne = saisieUtilisateurLigne(grille, tour);
+            if (ligne === tailleCôté(grille) * tailleCôté(grille)) {
+                return tourParTour(grille, tourBoucle)
+            }
+            colonne = saisieUtilisateurColonne(grille, tour);
+            if (colonne === tailleCôté(grille) * tailleCôté(grille)) {
+                return tourParTour(grille, tourBoucle)
+            }
+            if (estVide(grille, ligne, colonne) === false) {
+                console.log("erreur la case n'est pas vide");
+                return tourParTour(grille, tourBoucle);
+            }
+            écrire(grille, ligne, colonne, "X");
         }
         affiche(grille);
+        tourBoucle = statutDeLaPartie(grille, tourBoucle, maximumTour);
     }
 }
 
-function dansLaBoucle(grille: Array<Array<string>>, tour: number): void {
-    if (tour === tailleCôté(grille) * tailleCôté(grille)) {
-        console.log("la partie à été intérompue")
-    }
-    else {
-        let ligne = saisieUtilisateurLigne(grille, tour)
-        let colonne = saisieUtilisateurColonne(grille, tour)
-        vérification(ligne,colonne ,grille, tour)
-        if (tour % 2 === 0) {
-            écrire(grille, ligne, colonne, "O")
-        }
-        else {
-            écrire(grille, ligne, colonne, "X")
-        }
-    }
-}
-
-function vérification(ligneFonction: number, colonneFonction: number, grilleReférence: Array<Array<string>>, numéroTour: number): void {
-    if (estVide(grilleReférence, ligneFonction, colonneFonction) === false) {
-        console.log("erreur la case n'est pas vide")
-        dansLaBoucle(grilleReférence, numéroTour)
-    }
-}
+// function vérification(ligneFonction: number, colonneFonction: number, grilleReférence: Array<Array<string>>, numéroTour: number): void {
+//     if (estVide(grilleReférence, ligneFonction, colonneFonction) === false) {
+//         console.log("erreur la case n'est pas vide");
+//         return tourParTour(grilleReférence, numéroTour);
+//     }
+//     if (numéroTour % 2 === 0) {
+//         return écrire(grilleReférence, ligneFonction, colonneFonction, "O");
+//     }
+//     else {
+//         return écrire(grilleReférence, ligneFonction, colonneFonction, "X");
+//     }
+// }
 
 function saisieUtilisateurLigne(grille: Array<Array<string>>, numéroTour: number): number { //Cette fonction permet à l'utilisateur de rentrer une saisie et elle vérifie si elle est valide
-    let nombreSaisieLigne = Number(readlineSync.question("Entrez le numéro de la ligne (appuyez sur entrée pour annuler la saisie): "));
+    let saisieUtilisateur = readlineSync.question("Entrez le numéro de la ligne (appuyez sur entrée pour annuler la saisie): ");
+    if (saisieUtilisateur.length === 0) {
+        return tailleCôté(grille) * tailleCôté(grille);
+    }
+    let nombreSaisieLigne = Number(saisieUtilisateur)
     if (nombreSaisieLigne <= tailleCôté(grille)-1 && nombreSaisieLigne >= 0) {
-        return nombreSaisieLigne
+        return nombreSaisieLigne;
     }
     else if (nombreSaisieLigne > tailleCôté(grille)-1 ) {
         console.log("Erreur, le nombre inserer est plus grand que la longueur maximale de la grille");
@@ -171,10 +192,6 @@ function saisieUtilisateurLigne(grille: Array<Array<string>>, numéroTour: numbe
         console.log("Erreur, le nombre inserer ne peut pas être inférieur à 0");
         return saisieUtilisateurLigne(grille, numéroTour);
     }
-    else if (nombreSaisieLigne == null) {
-        tourParTour(grille, numéroTour)
-        return 0
-    }
     else {
         console.log("Erreur, caractère non valide");
         return saisieUtilisateurLigne(grille, numéroTour);
@@ -182,26 +199,107 @@ function saisieUtilisateurLigne(grille: Array<Array<string>>, numéroTour: numbe
 }
 
 function saisieUtilisateurColonne(grille: Array<Array<string>>, numéroTour: number): number { //Cette fonction est la même que celle au dessus, sauf avec des messages différentes
-    let nombreSaisieColonne = Number(readlineSync.question("Entrez le numéro de la colonne (appuyez sur entrée pour annuler la saisie): "));
+    let saisieUtilisateur = readlineSync.question("Entrez le numéro de la colonne (appuyez sur entrée pour annuler la saisie): ");
+    if (saisieUtilisateur.length === 0) {
+        return tailleCôté(grille) * tailleCôté(grille);
+
+    }
+    let nombreSaisieColonne = Number(saisieUtilisateur)
     if (nombreSaisieColonne <= tailleCôté(grille)-1 && nombreSaisieColonne >= 0) {
-        return nombreSaisieColonne
+        return nombreSaisieColonne;
     }
     else if (nombreSaisieColonne > tailleCôté(grille)-1 ) {
         console.log("Erreur, le nombre inserer est plus grand que la hauteur maximale de la grille");
-        return saisieUtilisateurColonne(grille, numéroTour);
+        return saisieUtilisateurColonne(grille, numéroTour);;
     }
     else if (nombreSaisieColonne < 0) {
         console.log("Erreur, le nombre inserer ne peut pas être inférieur à 0");
         return saisieUtilisateurColonne(grille, numéroTour);
     }
-    else if (nombreSaisieColonne === undefined) {
-        tourParTour(grille, numéroTour)
-        return 0
-    }
     else {
         console.log("Erreur, caractère non valide");
         return saisieUtilisateurColonne(grille, numéroTour);
     }
+}
+
+function statutDeLaPartie(grille: Array<Array<string>> , tour: number, maximumDeTour: number): number {
+    if (gagner(grille, "O") === true) {
+        console.log("le joueur O à gagner");
+        return tour = maximumDeTour;
+    }
+    else if (gagner(grille, "X") === true) {
+        console.log("le joueur X à gagner");
+        return tour = maximumDeTour;
+    }
+    else if (gagner(grille, "X") === false && gagner(grille, "O") === false && tour === maximumDeTour-1) {
+        console.log("C'est un match nul")
+        return tour = maximumDeTour;
+    }
+    else {
+        return tour
+    }
+}
+
+function intérompPartie(): void { //Fonction pour pouvoir intérompre le for si le joueur veut arreter la partie en cours
+    console.log("la partie à été intérompue");
+}
+
+function gagner(grille: Array<Array<string>>, symbole: string): boolean {
+    for (let ligne = 0, colonne = 0, compteurSymbole = 0; ligne < tailleCôté(grille); colonne++ ) { //Ce for permet de vérifier si le joueur à completer une grille horizontalement
+        if (grille[ligne][colonne] === symbole) {
+            compteurSymbole ++;
+        }
+        else {
+            compteurSymbole = 0;
+        }
+        if (compteurSymbole === tailleCôté(grille)) {
+            return true;
+        }
+        if (colonne === tailleCôté(grille)-1) {
+            ligne ++;
+            colonne = -1; //l'incrémentation le changera en 0
+            compteurSymbole = 0;
+        }
+    }
+    for (let ligne = 0, colonne = 0, compteurSymbole = 0; colonne < tailleCôté(grille); ligne++ ) { //Ce for permet de vérifier si le joueur à completer une grille verticalement
+        if (grille[ligne][colonne] === symbole) {
+            compteurSymbole ++;
+        }
+        else {
+            compteurSymbole = 0;
+        }
+        if (compteurSymbole === tailleCôté(grille)) {
+            return true;
+        }
+        if (ligne === tailleCôté(grille)-1) {
+            colonne ++;
+            ligne = -1; //l'incrémentation le changera en 0
+            compteurSymbole = 0;
+        }
+    }
+    for (let ligne = 0, colonne = 0, compteurSymbole = 0; colonne < tailleCôté(grille); ligne++, colonne++) { //Ce for permet de vérifier si le joueur à completer une grille diagonalement vers la droite
+        if (grille[ligne][colonne] === symbole) {
+            compteurSymbole ++;
+        }
+        else {
+            compteurSymbole = 0;
+        }
+        if (compteurSymbole === tailleCôté(grille)) {
+            return true;
+        }
+    }
+    for (let ligne = 0, colonne = tailleCôté(grille)-1, compteurSymbole = 0; ligne < tailleCôté(grille); ligne++, colonne--) { //Ce for permet de vérifier si le joueur à completer une grille diagonalement vers la gauche
+        if (grille[ligne][colonne] === symbole) {
+            compteurSymbole ++;
+        }
+        else {
+            compteurSymbole = 0;
+        }
+        if (compteurSymbole === tailleCôté(grille)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 main();
