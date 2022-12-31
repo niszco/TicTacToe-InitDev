@@ -95,13 +95,58 @@ function main(): void { //Fonction Principale
 }
 
 function questionTailleGrille(): number { //Permet de choisir la taille de la grille
-    let tailleQuestion = Number(readlineSync.question("Veuillez choisir la taille de votre grille: "));
-    if (tailleQuestion < 3) { // Si l'utilisateur demande un nombre inférieur à 3, ça lui repose la question, sinon ça crée le tableau
+    let tailleQuestion = readlineSync.question("Veuillez choisir la taille de votre grille: ");
+    if (verifieurEntier(tailleQuestion) === false) {
+        console.log("Il faut saisir un entier");
+        return questionTailleGrille();
+    }
+    let représentationQuestion = Number(tailleQuestion)
+    if (représentationQuestion < 3) { // Si l'utilisateur demande un nombre inférieur à 3, ça lui repose la question, sinon ça crée le tableau
         console.log("Erreur. Veuillez choisir 3 au minimum");
         return questionTailleGrille();
     }
     else {
-        return tailleQuestion;
+        return représentationQuestion;
+    }
+}
+
+function verifieurEntier(chaine: string): boolean { //Pour des raisons que je ne comprends pas, si on met un espace " " au début de la réponse, il sera considerer comme un 0
+    for (let incrémentation = 0, compteurSymbole = 0; incrémentation < chaine.length; incrémentation ++) {
+        if (chaine[incrémentation] === "-" || chaine[incrémentation] === "+") { //Cela permet de compter le nombre de - ou +, il ne peut seulement en avoir un seul
+            compteurSymbole ++;
+        }
+        if (((chaine[incrémentation] === "-" || chaine[incrémentation] === "+") && (chaine[incrémentation+1] === " " || chaine.length === 1))) { // s'il y a un symbole qui n'est pas attacher à un nombre, cela retourne faux
+            return false;
+        }
+        else if ((estUnSigneValide(chaine[incrémentation]) === false)) { 
+            // Cela vérifie si le string est un symbole valide, sinon ça retourne faux
+            return false;
+        }
+        else if (compteurSymbole > 1) { //S'il y a plus de symbole - ou + que 1, cela retourne faux
+            return false;
+        }
+    }
+    return true;
+}
+
+function estUnSigneValide (chaine: string): boolean { //Fonction pour permettre aux for ci-dessus d'être mieux lisible en permettant de racourcir les conditions
+    if ((chaine === "0" || 
+        chaine === "1" || 
+        chaine === "2" || 
+        chaine === "3" || 
+        chaine === "4" || 
+        chaine === "5" || 
+        chaine === "6" || 
+        chaine === "7" || 
+        chaine === "8" || 
+        chaine === "9" ||
+        chaine === "+" ||
+        chaine === "-") 
+    ) {
+        return true;
+    }
+    else {
+        return false;
     }
 }
 
@@ -135,7 +180,7 @@ function tourParTour(grille: Array<Array<string>>, tour: number): void { //Fonct
             if (colonne === tailleCôté(grille) * tailleCôté(grille)) {
                 return tourParTour(grille, tourBoucle)
             }
-            if (estVide(grille, ligne, colonne) === false) {
+            if (estVide(grille, ligne, colonne) === false) { //TODO trouver un moyen de renvoyer directement dans la saisie des coordonnées
                 console.log("erreur la case n'est pas vide");
                 return tourParTour(grille, tourBoucle);
             }
@@ -177,7 +222,11 @@ function tourParTour(grille: Array<Array<string>>, tour: number): void { //Fonct
 
 function saisieUtilisateurLigne(grille: Array<Array<string>>, numéroTour: number): number { //Cette fonction permet à l'utilisateur de rentrer une saisie et elle vérifie si elle est valide
     let saisieUtilisateur = readlineSync.question("Entrez le numéro de la ligne (appuyez sur entrée pour annuler la saisie): ");
-    if (saisieUtilisateur.length === 0) {
+    if (verifieurEntier(saisieUtilisateur) === false) {
+        console.log("Il faut saisir un entier");
+        return saisieUtilisateurLigne(grille, numéroTour);
+    }
+    else if (saisieUtilisateur.length === 0) {
         return tailleCôté(grille) * tailleCôté(grille);
     }
     let nombreSaisieLigne = Number(saisieUtilisateur)
@@ -200,9 +249,12 @@ function saisieUtilisateurLigne(grille: Array<Array<string>>, numéroTour: numbe
 
 function saisieUtilisateurColonne(grille: Array<Array<string>>, numéroTour: number): number { //Cette fonction est la même que celle au dessus, sauf avec des messages différentes
     let saisieUtilisateur = readlineSync.question("Entrez le numéro de la colonne (appuyez sur entrée pour annuler la saisie): ");
-    if (saisieUtilisateur.length === 0) {
+    if (verifieurEntier(saisieUtilisateur) === false) {
+        console.log("Il faut saisir un entier");
+        return saisieUtilisateurLigne(grille, numéroTour);
+    }
+    else if (saisieUtilisateur.length === 0) {
         return tailleCôté(grille) * tailleCôté(grille);
-
     }
     let nombreSaisieColonne = Number(saisieUtilisateur)
     if (nombreSaisieColonne <= tailleCôté(grille)-1 && nombreSaisieColonne >= 0) {
