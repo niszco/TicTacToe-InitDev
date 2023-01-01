@@ -20,7 +20,7 @@ function créeGrille(taille: number): Array<Array<string>> { //Exercice 1, Perme
 
 function tailleCôté(grille: Array<Array<string>>): number { //Exercice 2 
     let tailleGrille = 0;// Une grille de Tic Tac Toe est forcément un carré
-    for (let ligne = 0; ligne < grille.length; ligne ++, tailleGrille ++ ); //calcule la taille d'un coté de la grille gr^ace à l'incrémentation 
+    for (let ligne = 0; ligne < grille.length; ligne ++, tailleGrille ++ ); //calcule la taille d'un coté de la grille grâce à l'incrémentation 
     return tailleGrille;
 }
 
@@ -71,8 +71,8 @@ function affiche(grille: Array<Array<string>>): void { //Exercice 7
             }
         }
         console.log();
-        if (ligne_pipe != grille.length-1) { // permet d'empecher la mise en place d'une ligne de dash aprés la dernière ligne du tableau si la condition est valide 
-            for (let ligne_dash = 0; ligne_dash < 1; ligne_dash++) { //Ce for permet de créer une ligne de dash juste aprés la mise en place d'un array dans un array sous format ligne
+        if (ligne_pipe != grille.length-1) { // permet d'empecher la mise en place d'une ligne de "-" aprés la dernière ligne du tableau si la condition est valide 
+            for (let ligne_dash = 0; ligne_dash < 1; ligne_dash++) { //Ce for permet de créer une ligne de "-" juste aprés la mise en place d'un array dans un array sous format ligne
                 for (let colonne_dash = 0; colonne_dash < grille.length; colonne_dash++) {
                     if (colonne_dash != grille.length-1) { //Si le for est a sa dernière itération, il rajoute 3 "dash" à la place de 4 car il n'y a pas de pipe à la fin. 3 dash pour un élement et un pour le "pipe"
                         process.stdout.write("-" + "-" + "-" + "-");
@@ -89,14 +89,15 @@ function affiche(grille: Array<Array<string>>): void { //Exercice 7
 
 //2ème partie
 
-function main(): void { //Fonction Principale
-    let newTableau = créeGrille(questionTailleGrille());
-    tourParTour(newTableau, 0);
+function main(): void {
+    let newTableau = créeGrille(questionTailleGrille());// Permet de créer une grille vide pour jouer au morpion
+    let historique = new Array<Array<number|string>>// permet de créer le tableau qui stocke l'historique des coups sans le faire dans la boucle
+    tourParTour(newTableau, 0, historique); //Fonction qui sert de boucle pour jouer
 }
 
 function questionTailleGrille(): number { //Permet de choisir la taille de la grille
     let tailleQuestion = readlineSync.question("Veuillez choisir la taille de votre grille: ");
-    if (verifieurEntier(tailleQuestion) === false) {
+    if (verifieurEntier(tailleQuestion) === false) { //Si le caractére saisie n'est pas un entier, on repose la question
         console.log("Il faut saisir un entier");
         return questionTailleGrille();
     }
@@ -110,7 +111,7 @@ function questionTailleGrille(): number { //Permet de choisir la taille de la gr
     }
 }
 
-function verifieurEntier(chaine: string): boolean { //Pour des raisons que je ne comprends pas, si on met un espace " " au début de la réponse, il sera considerer comme un 0
+function verifieurEntier(chaine: string): boolean { //Pour des raisons que je ne comprends pas, si on met un espace " " au début de la réponse, il sera considerer comme un 0, en soit c'est n'est pas un problème qui nuit au fonctionnement
     for (let incrémentation = 0, compteurSymbole = 0; incrémentation < chaine.length; incrémentation ++) {
         if (chaine[incrémentation] === "-" || chaine[incrémentation] === "+") { //Cela permet de compter le nombre de - ou +, il ne peut seulement en avoir un seul
             compteurSymbole ++;
@@ -118,11 +119,8 @@ function verifieurEntier(chaine: string): boolean { //Pour des raisons que je ne
         if (((chaine[incrémentation] === "-" || chaine[incrémentation] === "+") && (chaine[incrémentation+1] === " " || chaine.length === 1))) { // s'il y a un symbole qui n'est pas attacher à un nombre, cela retourne faux
             return false;
         }
-        else if ((estUnSigneValide(chaine[incrémentation]) === false)) { 
-            // Cela vérifie si le string est un symbole valide, sinon ça retourne faux
-            return false;
-        }
-        else if (compteurSymbole > 1) { //S'il y a plus de symbole - ou + que 1, cela retourne faux
+        else if ((estUnSigneValide(chaine[incrémentation]) === false) || compteurSymbole > 1) { 
+            // Cela vérifie si le string est un symbole valide ou qu'il y a un seul symbole + ou -, sinon ça retourne faux
             return false;
         }
     }
@@ -142,7 +140,7 @@ function estUnSigneValide (chaine: string): boolean { //Fonction pour permettre 
         chaine === "9" ||
         chaine === "+" ||
         chaine === "-") 
-    ) {
+    ) { //Si le le caractére analysé est conforme, il retourne vrai
         return true;
     }
     else {
@@ -150,83 +148,82 @@ function estUnSigneValide (chaine: string): boolean { //Fonction pour permettre 
     }
 }
 
-function continuerPartie(tour: number, maximumDeTour: number): number {
-    let reponseQuestion = String(readlineSync.question("On continue ? [O]ui ou [N]on: "));
-    if (reponseQuestion === "N") { //Si l'utilisateur réponds Non, la fonction modifie la variable tour pour qu'elle soit identique à la valeur maximale de tours, cela permet d'arreter la boucle
-       return tour = maximumDeTour;
-    }
-    else if (reponseQuestion != "N" && reponseQuestion != "O") { //Si l'utilisateur saisie une valeur qui n'est ni N ou O, on lui redemande de saisir
-        console.log("Erreur. Veuillez saisir un caractère valide [O] ou [N]");
-        return continuerPartie(tour, maximumDeTour);
-    }
-    else { //Sinon la variable tour ne change pas
-        return tour;
-    }
-}
-
-function tourParTour(grille: Array<Array<string>>, tour: number): void { //Fonction pour faire les tours, en gros sous fonction principale
+function tourParTour(grille: Array<Array<string>>, tour: number, historique: Array<Array<number|string>>): void { //Fonction pour faire les tours
     for (let tourBoucle = tour, maximumTour = tailleCôté(grille) * tailleCôté(grille), ligne = 0, colonne = 0; tourBoucle < maximumTour; tourBoucle ++) { // Une grille de Tic Tac Toe est un carré, donc pour calculer le maximum d'élement on faits taille coté X taille coté
-        tourBoucle = continuerPartie(tourBoucle, maximumTour); //TourBoucle est la variable utilisé pour l'incrémentation et connaitre le nombre de tours
-        if (tourBoucle === tailleCôté(grille) * tailleCôté(grille)) { //lors de la fonction précedente, si le joueur à répondu Non, la variable tourBoucle prend la valeur maximumTour qui est aussi la limite du for
+        if (continuerPartie() === false) { //Cette condition permet de demander à l'utilisateur s'il veut continuer la partie
             return intérompPartie();
         }
-        else if (tourBoucle % 2 === 0) { //Le jeu commencera toujours par le joueur O
+        afficherHistorique(tourBoucle, historique); //La fonction affiche l'historique s'il y en a un
+        if (AnnulerCoup(tourBoucle) === true) { //Si la fonction retourne true, on procéde à l'annulation du coup précedent
+            effacer(grille, récupererNombreHistorique(historique, tourBoucle-1, 0), récupererNombreHistorique(historique, tourBoucle-1, 1)); //Pour plus d'information, il faut voir la fonction "récupererNombreHistorique"
+            historique.pop();
+            affiche(grille);
+            return tourParTour(grille, tourBoucle-1, historique); //On relance le tour mais on décremente de 1
+        }
+        if (tourBoucle % 2 === 0) { //Le jeu commencera toujours par le joueur O
             console.log("C'est au tour du joueur O");
             ligne = saisieUtilisateurLigne(grille, tour);
-            if (ligne === tailleCôté(grille) * tailleCôté(grille)) {
-                return tourParTour(grille, tourBoucle)
+            if (ligne === tailleCôté(grille) * tailleCôté(grille)) { //Il est imposible pour une données d'avoir la même valeur que la taille maximum d'une grille, la seule possibilité est grâce à une des conditions de la fonction
+                return tourParTour(grille, tourBoucle, historique) //Permet de retourner au début du tour si l'utilisateur appuie sur entrée lors de la saisie des données
             }
             colonne = saisieUtilisateurColonne(grille, tour);
             if (colonne === tailleCôté(grille) * tailleCôté(grille)) {
-                return tourParTour(grille, tourBoucle)
+                return tourParTour(grille, tourBoucle, historique);
             }
-            if (estVide(grille, ligne, colonne) === false) { //TODO trouver un moyen de renvoyer directement dans la saisie des coordonnées
+            if (estVide(grille, ligne, colonne) === false) { //TODO trouver un moyen de renvoyer directement dans la saisie des coordonnées //Peut-être en fesant une fonction qui stocke les données dans un array à la place que ce soit individuelle et puis le vérificateur dans cette même fonction
                 console.log("erreur la case n'est pas vide");
-                return tourParTour(grille, tourBoucle);
+                return tourParTour(grille, tourBoucle, historique);
             }
+            historique.push(écrireDansHistorique(ligne, colonne, "O"));
             écrire(grille, ligne, colonne, "O");
         }
         else { // si tourBoucle est impaire, c'est le tour du joueur X
             console.log("C'est au tour du joueur X");
             ligne = saisieUtilisateurLigne(grille, tour);
             if (ligne === tailleCôté(grille) * tailleCôté(grille)) {
-                return tourParTour(grille, tourBoucle)
+                return tourParTour(grille, tourBoucle, historique)
             }
             colonne = saisieUtilisateurColonne(grille, tour);
             if (colonne === tailleCôté(grille) * tailleCôté(grille)) {
-                return tourParTour(grille, tourBoucle)
+                return tourParTour(grille, tourBoucle, historique)
             }
             if (estVide(grille, ligne, colonne) === false) {
                 console.log("erreur la case n'est pas vide");
-                return tourParTour(grille, tourBoucle);
+                return tourParTour(grille, tourBoucle, historique);
             }
+            historique.push(écrireDansHistorique(ligne, colonne, "X"));
             écrire(grille, ligne, colonne, "X");
         }
         affiche(grille);
-        tourBoucle = statutDeLaPartie(grille, tourBoucle, maximumTour);
+        tourBoucle = statutDeLaPartie(grille, tourBoucle, maximumTour); //La boucle se finit immédiatement en mettant la valeur maximale si un des deux joueurs à gagné
     }
 }
 
-// function vérification(ligneFonction: number, colonneFonction: number, grilleReférence: Array<Array<string>>, numéroTour: number): void {
-//     if (estVide(grilleReférence, ligneFonction, colonneFonction) === false) {
-//         console.log("erreur la case n'est pas vide");
-//         return tourParTour(grilleReférence, numéroTour);
-//     }
-//     if (numéroTour % 2 === 0) {
-//         return écrire(grilleReférence, ligneFonction, colonneFonction, "O");
-//     }
-//     else {
-//         return écrire(grilleReférence, ligneFonction, colonneFonction, "X");
-//     }
-// }
+function continuerPartie(): boolean { //Cette fonction demande au joueur s'il veut continuer la partie
+    let reponseQuestion = String(readlineSync.question("On continue ? [O]ui ou [N]on: "));
+    if (reponseQuestion === "N") {
+        return false;
+    }
+    else if (reponseQuestion != "N" && reponseQuestion != "O") { //Si l'utilisateur saisie une valeur qui n'est ni N ou O, on lui redemande de saisir
+        console.log("Erreur. Veuillez saisir un caractère valide [O] ou [N]");
+        return continuerPartie();
+    }
+    else {
+        return true;
+    }
+}
+
+function intérompPartie(): void { //Fonction pour pouvoir intérompre le for si le joueur veut arreter la partie en cours
+    console.log("la partie à été intérompue");
+}
 
 function saisieUtilisateurLigne(grille: Array<Array<string>>, numéroTour: number): number { //Cette fonction permet à l'utilisateur de rentrer une saisie et elle vérifie si elle est valide
-    let saisieUtilisateur = readlineSync.question("Entrez le numéro de la ligne (appuyez sur entrée pour annuler la saisie): ");
+    let saisieUtilisateur = readlineSync.question("Entrez le numéro de la ligne (appuyez sur entrée pour annuler la saisie). Pour rappel, la grille commence par 0: ");
     if (verifieurEntier(saisieUtilisateur) === false) {
         console.log("Il faut saisir un entier");
         return saisieUtilisateurLigne(grille, numéroTour);
     }
-    else if (saisieUtilisateur.length === 0) {
+    else if (saisieUtilisateur.length === 0) { // si l'utilisateur appuie directemment sur entrée
         return tailleCôté(grille) * tailleCôté(grille);
     }
     let nombreSaisieLigne = Number(saisieUtilisateur)
@@ -248,12 +245,12 @@ function saisieUtilisateurLigne(grille: Array<Array<string>>, numéroTour: numbe
 }
 
 function saisieUtilisateurColonne(grille: Array<Array<string>>, numéroTour: number): number { //Cette fonction est la même que celle au dessus, sauf avec des messages différentes
-    let saisieUtilisateur = readlineSync.question("Entrez le numéro de la colonne (appuyez sur entrée pour annuler la saisie): ");
+    let saisieUtilisateur = readlineSync.question("Entrez le numéro de la colonne (appuyez sur entrée pour annuler la saisie). Pour rappel, la grille commence par 0: ");
     if (verifieurEntier(saisieUtilisateur) === false) {
         console.log("Il faut saisir un entier");
         return saisieUtilisateurLigne(grille, numéroTour);
     }
-    else if (saisieUtilisateur.length === 0) {
+    else if (saisieUtilisateur.length === 0) { //si l'utilisateur appuie directemment sur entrée
         return tailleCôté(grille) * tailleCôté(grille);
     }
     let nombreSaisieColonne = Number(saisieUtilisateur)
@@ -274,7 +271,20 @@ function saisieUtilisateurColonne(grille: Array<Array<string>>, numéroTour: num
     }
 }
 
-function statutDeLaPartie(grille: Array<Array<string>> , tour: number, maximumDeTour: number): number {
+// function vérification(ligneFonction: number, colonneFonction: number, grilleReférence: Array<Array<string>>, numéroTour: number): void { //TODO Peut-être obsolete 
+//     if (estVide(grilleReférence, ligneFonction, colonneFonction) === false) {
+//         console.log("erreur la case n'est pas vide");
+//         return tourParTour(grilleReférence, numéroTour);
+//     }
+//     if (numéroTour % 2 === 0) {
+//         return écrire(grilleReférence, ligneFonction, colonneFonction, "O");
+//     }
+//     else {
+//         return écrire(grilleReférence, ligneFonction, colonneFonction, "X");
+//     }
+// }
+
+function statutDeLaPartie(grille: Array<Array<string>> , tour: number, maximumDeTour: number): number { //Cette fonction vérifie si l'un des deux joueurs ont les conditions nécessaire pour gagner et met fin à la partie sinon ça continue jusqu'a l'annonce d'un match nul
     if (gagner(grille, "O") === true) {
         console.log("le joueur O à gagner");
         return tour = maximumDeTour;
@@ -285,18 +295,14 @@ function statutDeLaPartie(grille: Array<Array<string>> , tour: number, maximumDe
     }
     else if (gagner(grille, "X") === false && gagner(grille, "O") === false && tour === maximumDeTour-1) {
         console.log("C'est un match nul")
-        return tour = maximumDeTour;
+        return tour;
     }
     else {
         return tour
     }
 }
 
-function intérompPartie(): void { //Fonction pour pouvoir intérompre le for si le joueur veut arreter la partie en cours
-    console.log("la partie à été intérompue");
-}
-
-function gagner(grille: Array<Array<string>>, symbole: string): boolean {
+function gagner(grille: Array<Array<string>>, symbole: string): boolean { //Cette fonction vérifie en detail le tableau pour chercher si un des deux joueurs ont une combinaisons gagnante
     for (let ligne = 0, colonne = 0, compteurSymbole = 0; ligne < tailleCôté(grille); colonne++ ) { //Ce for permet de vérifier si le joueur à completer une grille horizontalement
         if (grille[ligne][colonne] === symbole) {
             compteurSymbole ++;
@@ -354,4 +360,41 @@ function gagner(grille: Array<Array<string>>, symbole: string): boolean {
     return false;
 }
 
-main();
+function écrireDansHistorique(ligne: number, colonne: number, Symbole: string): Array<number | string> { //Fonction qui insére le numéro de la ligne, colonne et symbole dans un tableau pour servir d'historique 
+    let historiqueArray = []
+    historiqueArray.push(ligne, colonne, Symbole)
+    return historiqueArray
+}
+
+function afficherHistorique(numéroTour: number, historique: Array<Array<number|string>>): void { //Permet d'afficher les informations nécessaires à l'utilisateur concernant l'historique
+    if (numéroTour === 0 ) {
+    }
+    else {
+        console.log("Dernier coup joué = (", historique[numéroTour-1][0],",", historique[numéroTour-1][1],",", "'",historique[numéroTour-1][2],"'", ")")
+    }
+}
+
+function AnnulerCoup(numéroTour: number): boolean { //Fonction qui demande à l'utilisateur s'il veut annuler son coup
+    if (numéroTour === 0 ) {
+        return false
+    }
+    else {
+        let reponseQuestion = String(readlineSync.question("annulez ce coup ? [O]ui ou [N]on: "));
+        if (reponseQuestion === "N") {
+            return false;
+        }
+        else if (reponseQuestion != "N" && reponseQuestion != "O") { //Si l'utilisateur saisie une valeur qui n'est ni N ou O, on lui redemande de saisir
+            console.log("Erreur. Veuillez saisir un caractère valide [O] ou [N]");
+            return AnnulerCoup(numéroTour);
+        }
+        else {
+            return true;
+        }
+    }
+}
+
+function récupererNombreHistorique(historique: Array<Array<number|string>>, numéroTour: number, indexArray: number): number { //Fonction qui permet de récupper un nombre du tableau de l'historique et de le convertir au bon type car number | string != number
+    return Number(historique[numéroTour][indexArray])
+}
+
+main(); //Pour lancer le Tic-Tac-Toe
