@@ -149,7 +149,7 @@ function estUnSigneValide (chaine: string): boolean { //Fonction pour permettre 
 }
 
 function tourParTour(grille: Array<Array<string>>, tour: number, historique: Array<Array<number|string>>): void { //Fonction pour faire les tours
-    for (let tourBoucle = tour, maximumTour = tailleCôté(grille) * tailleCôté(grille), ligne = 0, colonne = 0; tourBoucle < maximumTour; tourBoucle ++) { // Une grille de Tic Tac Toe est un carré, donc pour calculer le maximum d'élement on faits taille coté X taille coté
+    for (let tourBoucle = tour, maximumTour = tailleCôté(grille) * tailleCôté(grille); tourBoucle < maximumTour; tourBoucle ++) { // Une grille de Tic Tac Toe est un carré, donc pour calculer le maximum d'élement on faits taille coté X taille coté
         if (continuerPartie() === false) { //Cette condition permet de demander à l'utilisateur s'il veut continuer la partie
             return intérompPartie();
         }
@@ -162,37 +162,21 @@ function tourParTour(grille: Array<Array<string>>, tour: number, historique: Arr
         }
         if (tourBoucle % 2 === 0) { //Le jeu commencera toujours par le joueur O
             console.log("C'est au tour du joueur O");
-            ligne = saisieUtilisateurLigne(grille, tour);
-            if (ligne === tailleCôté(grille) * tailleCôté(grille)) { //Il est imposible pour une données d'avoir la même valeur que la taille maximum d'une grille, la seule possibilité est grâce à une des conditions de la fonction
+            let saisieDonnées = saisieUtilisateur(grille, tourBoucle)
+            if ((saisieDonnées[0] === tailleCôté(grille) * tailleCôté(grille)) || (saisieDonnées[1] === tailleCôté(grille) * tailleCôté(grille))) { //Il est imposible pour une données d'avoir la même valeur que la taille maximum d'une grille, la seule possibilité est grâce à une des conditions de la fonction
                 return tourParTour(grille, tourBoucle, historique) //Permet de retourner au début du tour si l'utilisateur appuie sur entrée lors de la saisie des données
             }
-            colonne = saisieUtilisateurColonne(grille, tour);
-            if (colonne === tailleCôté(grille) * tailleCôté(grille)) {
-                return tourParTour(grille, tourBoucle, historique);
-            }
-            if (estVide(grille, ligne, colonne) === false) { //TODO trouver un moyen de renvoyer directement dans la saisie des coordonnées //Peut-être en fesant une fonction qui stocke les données dans un array à la place que ce soit individuelle et puis le vérificateur dans cette même fonction
-                console.log("erreur la case n'est pas vide");
-                return tourParTour(grille, tourBoucle, historique);
-            }
-            historique.push(écrireDansHistorique(ligne, colonne, "O"));
-            écrire(grille, ligne, colonne, "O");
+            historique.push(écrireDansHistorique(saisieDonnées[0], saisieDonnées[1], "O"));
+            écrire(grille, saisieDonnées[0], saisieDonnées[1], "O");
         }
         else { // si tourBoucle est impaire, c'est le tour du joueur X
             console.log("C'est au tour du joueur X");
-            ligne = saisieUtilisateurLigne(grille, tour);
-            if (ligne === tailleCôté(grille) * tailleCôté(grille)) {
-                return tourParTour(grille, tourBoucle, historique)
+            let saisieDonnées = saisieUtilisateur(grille, tourBoucle)
+            if ((saisieDonnées[0] === tailleCôté(grille) * tailleCôté(grille)) || (saisieDonnées[1] === tailleCôté(grille) * tailleCôté(grille))) { //Il est imposible pour une données d'avoir la même valeur que la taille maximum d'une grille, la seule possibilité est grâce à une des conditions de la fonction
+                return tourParTour(grille, tourBoucle, historique) //Permet de retourner au début du tour si l'utilisateur appuie sur entrée lors de la saisie des données
             }
-            colonne = saisieUtilisateurColonne(grille, tour);
-            if (colonne === tailleCôté(grille) * tailleCôté(grille)) {
-                return tourParTour(grille, tourBoucle, historique)
-            }
-            if (estVide(grille, ligne, colonne) === false) {
-                console.log("erreur la case n'est pas vide");
-                return tourParTour(grille, tourBoucle, historique);
-            }
-            historique.push(écrireDansHistorique(ligne, colonne, "X"));
-            écrire(grille, ligne, colonne, "X");
+            historique.push(écrireDansHistorique(saisieDonnées[0], saisieDonnées[1], "X"));
+            écrire(grille, saisieDonnées[0], saisieDonnées[1], "X");
         }
         affiche(grille);
         tourBoucle = statutDeLaPartie(grille, tourBoucle, maximumTour); //La boucle se finit immédiatement en mettant la valeur maximale si un des deux joueurs à gagné
@@ -215,6 +199,25 @@ function continuerPartie(): boolean { //Cette fonction demande au joueur s'il ve
 
 function intérompPartie(): void { //Fonction pour pouvoir intérompre le for si le joueur veut arreter la partie en cours
     console.log("la partie à été intérompue");
+}
+
+function saisieUtilisateur(grille: Array<Array<string>>, numéroTour: number): Array<number> { //Cette fonction permet de saisir les données et les stocker dans un tableau
+    let stockageSaisie = new Array<number>;
+    let ligne = saisieUtilisateurLigne(grille, numéroTour);
+    stockageSaisie.push(ligne);
+    if (stockageSaisie[0] === tailleCôté(grille) * tailleCôté(grille)) {
+        return stockageSaisie;
+    }
+    let colonne = saisieUtilisateurColonne(grille, numéroTour);
+    stockageSaisie.push(colonne)
+    if (stockageSaisie[1] === tailleCôté(grille) * tailleCôté(grille)) {
+        return stockageSaisie;
+    }
+    if (estVide(grille, stockageSaisie[0], stockageSaisie[1]) === false) {
+        console.log("erreur la case n'est pas vide");
+        return saisieUtilisateur(grille, numéroTour);
+    }
+    return stockageSaisie;
 }
 
 function saisieUtilisateurLigne(grille: Array<Array<string>>, numéroTour: number): number { //Cette fonction permet à l'utilisateur de rentrer une saisie et elle vérifie si elle est valide
