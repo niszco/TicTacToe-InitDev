@@ -91,7 +91,7 @@ function affiche(grille: Array<Array<string>>): void { //Exercice 7
 
 function main(): void {
     let newTableau = créeGrille(questionTailleGrille());// Permet de créer une grille vide pour jouer au morpion
-    let historique = new Array<Array<number|string>>// permet de créer le tableau qui stocke l'historique des coups sans le faire dans la boucle
+    let historique = new Array<Array<number|string>>;// permet de créer le tableau qui stocke l'historique des coups sans le faire dans la boucle
     tourParTour(newTableau, 0, historique); //Fonction qui sert de boucle pour jouer
 }
 
@@ -162,18 +162,18 @@ function tourParTour(grille: Array<Array<string>>, tour: number, historique: Arr
         }
         if (tourBoucle % 2 === 0) { //Le jeu commencera toujours par le joueur O
             console.log("C'est au tour du joueur O");
-            let saisieDonnées = saisieUtilisateur(grille, tourBoucle)
+            let saisieDonnées = saisieUtilisateur(grille, tourBoucle);
             if ((saisieDonnées[0] === tailleCôté(grille) * tailleCôté(grille)) || (saisieDonnées[1] === tailleCôté(grille) * tailleCôté(grille))) { //Il est imposible pour une données d'avoir la même valeur que la taille maximum d'une grille, la seule possibilité est grâce à une des conditions de la fonction
-                return tourParTour(grille, tourBoucle, historique) //Permet de retourner au début du tour si l'utilisateur appuie sur entrée lors de la saisie des données
+                return tourParTour(grille, tourBoucle, historique); //Permet de retourner au début du tour si l'utilisateur appuie sur entrée lors de la saisie des données
             }
             historique.push(écrireDansHistorique(saisieDonnées[0], saisieDonnées[1], "O"));
             écrire(grille, saisieDonnées[0], saisieDonnées[1], "O");
         }
         else { // si tourBoucle est impaire, c'est le tour du joueur X
             console.log("C'est au tour du joueur X");
-            let saisieDonnées = saisieUtilisateur(grille, tourBoucle)
+            let saisieDonnées = saisieUtilisateur(grille, tourBoucle);
             if ((saisieDonnées[0] === tailleCôté(grille) * tailleCôté(grille)) || (saisieDonnées[1] === tailleCôté(grille) * tailleCôté(grille))) { //Il est imposible pour une données d'avoir la même valeur que la taille maximum d'une grille, la seule possibilité est grâce à une des conditions de la fonction
-                return tourParTour(grille, tourBoucle, historique) //Permet de retourner au début du tour si l'utilisateur appuie sur entrée lors de la saisie des données
+                return tourParTour(grille, tourBoucle, historique); //Permet de retourner au début du tour si l'utilisateur appuie sur entrée lors de la saisie des données
             }
             historique.push(écrireDansHistorique(saisieDonnées[0], saisieDonnées[1], "X"));
             écrire(grille, saisieDonnées[0], saisieDonnées[1], "X");
@@ -262,7 +262,7 @@ function saisieUtilisateurColonne(grille: Array<Array<string>>, numéroTour: num
     }
     else if (nombreSaisieColonne > tailleCôté(grille)-1 ) {
         console.log("Erreur, le nombre inserer est plus grand que la hauteur maximale de la grille");
-        return saisieUtilisateurColonne(grille, numéroTour);;
+        return saisieUtilisateurColonne(grille, numéroTour);
     }
     else if (nombreSaisieColonne < 0) {
         console.log("Erreur, le nombre inserer ne peut pas être inférieur à 0");
@@ -273,19 +273,6 @@ function saisieUtilisateurColonne(grille: Array<Array<string>>, numéroTour: num
         return saisieUtilisateurColonne(grille, numéroTour);
     }
 }
-
-// function vérification(ligneFonction: number, colonneFonction: number, grilleReférence: Array<Array<string>>, numéroTour: number): void { //TODO Peut-être obsolete 
-//     if (estVide(grilleReférence, ligneFonction, colonneFonction) === false) {
-//         console.log("erreur la case n'est pas vide");
-//         return tourParTour(grilleReférence, numéroTour);
-//     }
-//     if (numéroTour % 2 === 0) {
-//         return écrire(grilleReférence, ligneFonction, colonneFonction, "O");
-//     }
-//     else {
-//         return écrire(grilleReférence, ligneFonction, colonneFonction, "X");
-//     }
-// }
 
 function statutDeLaPartie(grille: Array<Array<string>> , tour: number, maximumDeTour: number): number { //Cette fonction vérifie si l'un des deux joueurs ont les conditions nécessaire pour gagner et met fin à la partie sinon ça continue jusqu'a l'annonce d'un match nul
     if (gagner(grille, "O") === true) {
@@ -301,7 +288,7 @@ function statutDeLaPartie(grille: Array<Array<string>> , tour: number, maximumDe
         return tour;
     }
     else {
-        return tour
+        return tour;
     }
 }
 
@@ -364,22 +351,22 @@ function gagner(grille: Array<Array<string>>, symbole: string): boolean { //Cett
 }
 
 function écrireDansHistorique(ligne: number, colonne: number, Symbole: string): Array<number | string> { //Fonction qui insére le numéro de la ligne, colonne et symbole dans un tableau pour servir d'historique 
-    let historiqueArray = []
-    historiqueArray.push(ligne, colonne, Symbole)
-    return historiqueArray
+    let historiqueArray = [];
+    historiqueArray.push(ligne, colonne, Symbole);
+    return historiqueArray;
 }
 
 function afficherHistorique(numéroTour: number, historique: Array<Array<number|string>>): void { //Permet d'afficher les informations nécessaires à l'utilisateur concernant l'historique
     if (numéroTour === 0 ) {
     }
     else {
-        console.log("Dernier coup joué = (", historique[numéroTour-1][0],",", historique[numéroTour-1][1],",", "'",historique[numéroTour-1][2],"'", ")")
+        console.log("Dernier coup joué = (", historique[numéroTour-1][0],",", historique[numéroTour-1][1],",", "'",historique[numéroTour-1][2],"'", ")");
     }
 }
 
 function AnnulerCoup(numéroTour: number): boolean { //Fonction qui demande à l'utilisateur s'il veut annuler son coup
     if (numéroTour === 0 ) {
-        return false
+        return false;
     }
     else {
         let reponseQuestion = String(readlineSync.question("annulez ce coup ? [O]ui ou [N]on: "));
