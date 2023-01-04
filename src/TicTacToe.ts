@@ -36,7 +36,7 @@ function écrire(grille: Array<Array<string>>, ligne: number, colonne: number, s
         console.log("erreur, les paramétres pour la position sont fausse ou elle contient deja une valeur");
     }
     else if (symbole != "X" && symbole != "O" && symbole != "x" && symbole != "o") { // Si le symbole n'est pas conforme, cela retourne une erreur, x et X sont différent ainsi que pour o et O
-        console.log("erreur, le paramétre pour le symbole est non conforme"); // TODO Remplacer par des lowercase machin
+        console.log("erreur, le paramétre pour le symbole est non conforme");
     }
     else {
         grille[ligne][colonne] = symbole;
@@ -185,10 +185,10 @@ function tourParTour(grille: Array<Array<string>>, tour: number, historique: Arr
 
 function continuerPartie(): boolean { // Cette fonction demande au joueur s'il veut continuer la partie
     let reponseQuestion = String(readlineSync.question("On continue ? [O]ui ou [N]on: "));
-    if (reponseQuestion === "N") {
+    if (reponseQuestion.toUpperCase() === "N") {
         return false;
     }
-    else if (reponseQuestion != "N" && reponseQuestion != "O") { // Si l'utilisateur saisie une valeur qui n'est ni N ou O, on lui redemande de saisir
+    else if (reponseQuestion.toUpperCase() != "N" && reponseQuestion.toUpperCase() != "O") { // Si l'utilisateur saisie une valeur qui n'est ni N ou O, on lui redemande de saisir
         console.log("Erreur. Veuillez saisir un caractère valide [O] ou [N]");
         return continuerPartie();
     }
@@ -370,10 +370,10 @@ function AnnulerCoup(numéroTour: number): boolean { // Fonction qui demande à 
     }
     else {
         let reponseQuestion = String(readlineSync.question("annulez ce coup ? [O]ui ou [N]on: "));
-        if (reponseQuestion === "N") {
+        if (reponseQuestion.toUpperCase() === "N") {
             return false;
         }
-        else if (reponseQuestion != "N" && reponseQuestion != "O") { // Si l'utilisateur saisie une valeur qui n'est ni N ou O, on lui redemande de saisir la valeur
+        else if (reponseQuestion.toUpperCase() != "N" && reponseQuestion.toUpperCase() != "O") { // Si l'utilisateur saisie une valeur qui n'est ni N ou O, on lui redemande de saisir la valeur
             console.log("Erreur. Veuillez saisir un caractère valide [O] ou [N]");
             return AnnulerCoup(numéroTour);
         }
