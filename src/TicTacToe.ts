@@ -101,7 +101,7 @@ function questionTailleGrille(): number { // Permet de choisir la taille de la g
         console.log("Il faut saisir un entier");
         return questionTailleGrille();
     }
-    let représentationQuestion = Number(tailleQuestion)
+    let représentationQuestion = parseInt(tailleQuestion, 10)
     if (représentationQuestion < 3) { // Si l'utilisateur demande un nombre inférieur à 3, on lui repose la question, sinon le tableau est créé.
         console.log("Erreur. Veuillez choisir 3 au minimum");
         return questionTailleGrille();
@@ -229,7 +229,7 @@ function saisieUtilisateurLigne(grille: Array<Array<string>>, numéroTour: numbe
     else if (saisieUtilisateur.length === 0) { // Si l'utilisateur appuie directemment sur entrer
         return tailleCôté(grille) * tailleCôté(grille);
     }
-    let nombreSaisieLigne = Number(saisieUtilisateur)
+    let nombreSaisieLigne = parseInt(saisieUtilisateur, 10)
     if (nombreSaisieLigne <= tailleCôté(grille)-1 && nombreSaisieLigne >= 0) {
         return nombreSaisieLigne;
     }
@@ -256,7 +256,7 @@ function saisieUtilisateurColonne(grille: Array<Array<string>>, numéroTour: num
     else if (saisieUtilisateur.length === 0) { // Si l'utilisateur appuie directemment sur entrer
         return tailleCôté(grille) * tailleCôté(grille);
     }
-    let nombreSaisieColonne = Number(saisieUtilisateur)
+    let nombreSaisieColonne = parseInt(saisieUtilisateur, 10)
     if (nombreSaisieColonne <= tailleCôté(grille)-1 && nombreSaisieColonne >= 0) {
         return nombreSaisieColonne;
     }
